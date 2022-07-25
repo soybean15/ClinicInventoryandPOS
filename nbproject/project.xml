@@ -6,7 +6,6 @@
             <name>OOP2Project</name>
             <source-roots>
                 <root id="src.dir"/>
-                <root id="src.images.dir" name="Images Packages"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir"/>

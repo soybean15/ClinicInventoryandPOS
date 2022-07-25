@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package Frames;
+package Frames.mini;
 
 import Classes.DbConnection;
 import Panels.Users;
@@ -28,6 +28,7 @@ public class AddUserFrame extends javax.swing.JFrame {
     /**
      * Creates new form AddUserFrame
      */
+    Users users;
     Connection conn = null;
     File file;
     String path = null;
@@ -53,6 +54,10 @@ public class AddUserFrame extends javax.swing.JFrame {
         initComponents();
         loadDefault();
     }
+    
+    public void setInstance(Users users){
+        this.users =users;
+    }
 
     void loadDefault() {
 
@@ -72,6 +77,12 @@ public class AddUserFrame extends javax.swing.JFrame {
         Image img = ii.getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH);
 
         lblImage.setIcon(new ImageIcon(img));
+        btnSave.setForeground(Color.GRAY);
+        btnSave.setEnabled(false);
+        
+        clearTextField();
+        
+        lblUserWarning.setVisible(false);
     }
 
     void uploadImage() {
@@ -97,6 +108,20 @@ public class AddUserFrame extends javax.swing.JFrame {
             }
 
         }
+    }
+    
+    boolean checkUserName(){
+        try{
+            PreparedStatement pst = conn.prepareStatement("Select * from tbl_users where username = '"+txtUserName.getText()+"'");
+            ResultSet rs = pst.executeQuery();
+            rs.last();
+            if(rs.getRow()==0){
+                return false;
+            }
+        }catch(Exception e){
+            
+        }
+        return true;
     }
 
     void saveButton() {
@@ -133,6 +158,29 @@ public class AddUserFrame extends javax.swing.JFrame {
             System.out.println("Error inserting " + e);
         }
     }
+    
+    private void checkAllFields(){
+        if(isValidFirstName && isValidLastName && isValidUserName && isValidContactNo && isValidemail && isValidPassword){
+            btnSave.setEnabled(true);
+              btnSave.setForeground(new Color(51,51,51));
+        }else{
+             btnSave.setEnabled(false);
+             btnSave.setForeground(Color.GRAY);
+        }
+                
+     
+   
+    
+    }
+    
+    private void clearTextField() {
+        txtPassword.setText("");
+        txtUserName.setText("");
+        txtemail.setText("");
+        txtfName.setText("");
+        txtlName.setText("");
+        ftxtContactno.setText("");
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -159,7 +207,7 @@ public class AddUserFrame extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
         jLabel7 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
         ftxtContactno = new javax.swing.JFormattedTextField();
         jLabel8 = new javax.swing.JLabel();
         lblfName = new javax.swing.JLabel();
@@ -168,6 +216,7 @@ public class AddUserFrame extends javax.swing.JFrame {
         lblContact = new javax.swing.JLabel();
         lblEmail = new javax.swing.JLabel();
         lblPassword = new javax.swing.JLabel();
+        lblUserWarning = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -196,7 +245,6 @@ public class AddUserFrame extends javax.swing.JFrame {
         txtfName.setBackground(new java.awt.Color(51, 51, 51));
         txtfName.setFont(new java.awt.Font("Waree", 0, 14)); // NOI18N
         txtfName.setForeground(new java.awt.Color(255, 255, 255));
-        txtfName.setText("John");
         txtfName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)));
         txtfName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -210,7 +258,6 @@ public class AddUserFrame extends javax.swing.JFrame {
         txtlName.setBackground(new java.awt.Color(51, 51, 51));
         txtlName.setFont(new java.awt.Font("Waree", 0, 14)); // NOI18N
         txtlName.setForeground(new java.awt.Color(255, 255, 255));
-        txtlName.setText("Doe");
         txtlName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)));
         txtlName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -224,8 +271,12 @@ public class AddUserFrame extends javax.swing.JFrame {
         txtUserName.setBackground(new java.awt.Color(51, 51, 51));
         txtUserName.setFont(new java.awt.Font("Waree", 0, 14)); // NOI18N
         txtUserName.setForeground(new java.awt.Color(255, 255, 255));
-        txtUserName.setText("JohnDoe123");
         txtUserName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)));
+        txtUserName.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtUserNameFocusLost(evt);
+            }
+        });
         txtUserName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtUserNameKeyPressed(evt);
@@ -238,7 +289,6 @@ public class AddUserFrame extends javax.swing.JFrame {
         txtemail.setBackground(new java.awt.Color(51, 51, 51));
         txtemail.setFont(new java.awt.Font("Waree", 0, 14)); // NOI18N
         txtemail.setForeground(new java.awt.Color(255, 255, 255));
-        txtemail.setText("John@hello");
         txtemail.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)));
         txtemail.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -290,19 +340,19 @@ public class AddUserFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(255, 255, 255));
-        jButton1.setFont(new java.awt.Font("Waree", 1, 12)); // NOI18N
-        jButton1.setText("Save");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setBackground(new java.awt.Color(255, 255, 255));
+        btnSave.setFont(new java.awt.Font("Waree", 1, 12)); // NOI18N
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
 
         ftxtContactno.setBackground(new java.awt.Color(51, 51, 51));
         ftxtContactno.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)));
         ftxtContactno.setForeground(new java.awt.Color(255, 255, 255));
-        ftxtContactno.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat(""))));
+        ftxtContactno.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         ftxtContactno.setFont(new java.awt.Font("Waree", 0, 14)); // NOI18N
         ftxtContactno.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -335,22 +385,22 @@ public class AddUserFrame extends javax.swing.JFrame {
         lblPassword.setFont(new java.awt.Font("Monospaced", 1, 12)); // NOI18N
         lblPassword.setForeground(new java.awt.Color(255, 255, 255));
 
+        lblUserWarning.setFont(new java.awt.Font("Monospaced", 0, 10)); // NOI18N
+        lblUserWarning.setForeground(new java.awt.Color(255, 0, 0));
+        lblUserWarning.setText("*UserName already Exist");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(60, Short.MAX_VALUE)
+                .addContainerGap(72, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(txtemail)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(txtfName, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(4, 4, 4)
@@ -364,24 +414,30 @@ public class AddUserFrame extends javax.swing.JFrame {
                                     .addComponent(lbllName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addComponent(txtUserName)
                         .addComponent(txtPassword)
-                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(ftxtContactno))
+                        .addComponent(btnSave, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ftxtContactno)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(78, 78, 78)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lblContact, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lblEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lblPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(78, 78, 78)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblContact, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(58, 58, 58))
+                        .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(66, 66, 66)
+                        .addComponent(lblUserWarning, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(46, 46, 46))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -412,9 +468,10 @@ public class AddUserFrame extends javax.swing.JFrame {
                     .addComponent(txtfName, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtlName, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(lblUserName, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(lblUserWarning, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -437,7 +494,7 @@ public class AddUserFrame extends javax.swing.JFrame {
                         .addGap(12, 12, 12)
                         .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22))
         );
@@ -473,16 +530,18 @@ public class AddUserFrame extends javax.swing.JFrame {
         uploadImage();
     }//GEN-LAST:event_lblUploadMouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
 
         saveButton();
+        loadDefault();
+        users.getAllData();
+        dispose();
+        
 
-
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-       Users users = new Users();
-       users.init();
+       
        dispose();
     }//GEN-LAST:event_jLabel7MouseClicked
 
@@ -521,6 +580,8 @@ public class AddUserFrame extends javax.swing.JFrame {
              isValidLastName =false;
              lbllName.setIcon(warning);
         }
+       
+       checkAllFields();
     }//GEN-LAST:event_txtlNameKeyReleased
 
     private void txtfNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtfNameKeyReleased
@@ -532,6 +593,7 @@ public class AddUserFrame extends javax.swing.JFrame {
              isValidFirstName =false;
              lblfName.setIcon(warning);
         }
+       checkAllFields();
     }//GEN-LAST:event_txtfNameKeyReleased
 
     private void txtUserNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUserNameKeyReleased
@@ -542,6 +604,7 @@ public class AddUserFrame extends javax.swing.JFrame {
              isValidUserName =false;
              lblUserName.setIcon(warning);
         }
+        checkAllFields();
     }//GEN-LAST:event_txtUserNameKeyReleased
 
     private void txtemailKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtemailKeyReleased
@@ -557,6 +620,7 @@ public class AddUserFrame extends javax.swing.JFrame {
             isValidemail = false;
             lblEmail.setIcon(warning);
         }
+        checkAllFields();
     }//GEN-LAST:event_txtemailKeyReleased
 
     private void ftxtContactnoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ftxtContactnoKeyReleased
@@ -576,6 +640,7 @@ public class AddUserFrame extends javax.swing.JFrame {
             isValidContactNo = true;
             lblContact.setIcon(good);
         }
+        checkAllFields();
         
     }//GEN-LAST:event_ftxtContactnoKeyReleased
 
@@ -587,7 +652,22 @@ public class AddUserFrame extends javax.swing.JFrame {
             isValidPassword = false;
             lblPassword.setIcon(warning);
         }
+        checkAllFields();
     }//GEN-LAST:event_txtPasswordKeyReleased
+
+    private void txtUserNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUserNameFocusLost
+        System.out.println(checkUserName());
+        if(! checkUserName()){
+            
+            isValidUserName = true;
+            lblUserName.setIcon(good);
+             lblUserWarning.setVisible(false);
+        }else{
+            isValidUserName = false;
+            lblUserName.setIcon(warning);
+             lblUserWarning.setVisible(true);
+        }
+    }//GEN-LAST:event_txtUserNameFocusLost
 
     /**
      * @param args the command line arguments
@@ -625,8 +705,8 @@ public class AddUserFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSave;
     private javax.swing.JFormattedTextField ftxtContactno;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -643,6 +723,7 @@ public class AddUserFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblUpload;
     private javax.swing.JLabel lblUserName;
+    private javax.swing.JLabel lblUserWarning;
     private javax.swing.JLabel lblfName;
     private javax.swing.JLabel lbllName;
     private javax.swing.JPasswordField txtPassword;

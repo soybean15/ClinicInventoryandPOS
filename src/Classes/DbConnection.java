@@ -18,12 +18,11 @@ public class DbConnection {
     public static Connection dbConnect(){
         try{
             Class.forName("com.mysql.jdbc.Driver");
-             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/MaxiClinic_db","root", "");
+             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Maxilife_db","root", "");
             
             
+            System.out.println("Connected");
            
-            System.out.println("COnnected");
-				
             return conn;
         }catch(Exception e){
             
@@ -31,6 +30,9 @@ public class DbConnection {
             return null;
         }
         
+    }
+    public static void main(String[] args) {
+        dbConnect();
     }
 
 }

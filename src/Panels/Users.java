@@ -5,7 +5,8 @@
 package Panels;
 
 import Classes.DbConnection;
-import Frames.AddUserFrame;
+import Classes.User;
+import Frames.mini.AddUserFrame;
 import Frames.MainFrame;
 import java.awt.Color;
 import java.awt.Component;
@@ -17,10 +18,10 @@ import java.io.InputStream;
 
 
 import java.sql.*;
-import java.util.Arrays;
+
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -28,7 +29,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -72,19 +72,22 @@ public class Users extends javax.swing.JPanel {
     ImageIcon promote = new ImageIcon(this.getClass().getClassLoader().getResource("Icons/up_icon.png"));
     ImageIcon demote = new ImageIcon(this.getClass().getClassLoader().getResource("Icons/down_icon.png"));
     
+    
+    User user;
     public Users() {
         conn = DbConnection.dbConnect();
         initComponents();
-        init();
+       // init();
         loadDefault();
         System.out.println("user id"+user_id);
        
-
+        init();
     }
     
     
     
-    public void init(){     
+    public void init(){ 
+     
         tableDesign();
         getAllData();
         modifyTable();
@@ -131,11 +134,13 @@ public class Users extends javax.swing.JPanel {
         try{
             PreparedStatement pst = conn.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
-       
-            Object[] users = new Object[5];
-            
+            rs.last();
+            System.out.println("here:"+rs.getRow());
+            Object[] users = new Object[3];
+            rs.beforeFirst();
             int i = 0;
             while(rs.next()){
+                System.out.println("hello");
                 String id = rs.getString("user_id");
                 String _name = rs.getString("user_firstname")+" "+rs.getString("user_lastName");
                 String _role = rs.getString("user_role");
@@ -152,7 +157,7 @@ public class Users extends javax.swing.JPanel {
             }
                 jTable1.setModel(model);
             }catch(Exception e){
-                    
+                    System.out.println("here "+e);
             }
             
             
@@ -190,10 +195,18 @@ public class Users extends javax.swing.JPanel {
                ImageIcon ii = new ImageIcon(im);
                Image img = ii.getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH);
                lblImage.setIcon(new ImageIcon(img));
-               
-               
+
            }
-           promoteDemoteButton();
+
+           if (user_id == 1) {
+               lblPromote.setVisible(false);
+               btnDelete.enable(false);
+
+           } else {
+                 lblPromote.setVisible(true);
+ btnDelete.enable(true);
+               promoteDemoteButton();
+           }
            showChangeLabel(true);
             lblchange.show();
        }catch(Exception e){
@@ -531,6 +544,11 @@ public class Users extends javax.swing.JPanel {
         txtPassword.setEditable(false);
         txtPassword.setBackground(new java.awt.Color(255, 255, 255));
         txtPassword.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 0, new java.awt.Color(0, 0, 0)));
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
         txtPassword.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtPasswordKeyReleased(evt);
@@ -642,7 +660,9 @@ public class Users extends javax.swing.JPanel {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
        AddUserFrame adduser = new AddUserFrame();
+       adduser.setInstance(this);
        adduser.show();
+       
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnAddMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseEntered
@@ -946,8 +966,20 @@ public class Users extends javax.swing.JPanel {
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         if(user_id <0){
             JOptionPane.showMessageDialog(null, "Please Select an item");
-        }else
-        deleteUser();
+        }else{
+            if(user_id ==1){
+                JOptionPane.showMessageDialog(null, "Restricted");
+            }else{
+                 int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + txtName.getText() + "?", "Delete", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                 deleteUser();
+                 getAllData();
+            }
+              
+            }
+            
+        }
+        
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void lblPromoteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPromoteMouseClicked
@@ -969,6 +1001,10 @@ public class Users extends javax.swing.JPanel {
               JOptionPane.showMessageDialog(null, name+" was "+title+"d"+" to "+value);
         }
     }//GEN-LAST:event_lblPromoteMouseClicked
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPasswordActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1008,20 +1044,20 @@ public class Users extends javax.swing.JPanel {
     private javax.swing.JTextField txtUserName;
     // End of variables declaration//GEN-END:variables
 
-DefaultTableCellRenderer r = new DefaultTableCellRenderer() {
-
-    Border padding = BorderFactory.createEmptyBorder(0, 10, 0, 10);
-    @Override
-    public Component getTableCellRendererComponent(JTable table,
-            Object value, boolean isSelected, boolean hasFocus,
-            int row, int column) {
-        super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
-                row, column);
-        setBorder(BorderFactory.createCompoundBorder(getBorder(), padding));
-        return this;
-    }
-
-};
+//DefaultTableCellRenderer r = new DefaultTableCellRenderer() {
+//
+//    Border padding = BorderFactory.createEmptyBorder(0, 10, 0, 10);
+//    @Override
+//    public Component getTableCellRendererComponent(JTable table,
+//            Object value, boolean isSelected, boolean hasFocus,
+//            int row, int column) {
+//        super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
+//                row, column);
+//        setBorder(BorderFactory.createCompoundBorder(getBorder(), padding));
+//        return this;
+//    }
+//
+//};
     private void showChangeLabel(boolean isShow){
         lblname.setVisible(isShow);
         lblusername.setVisible(isShow);
@@ -1160,14 +1196,18 @@ DefaultTableCellRenderer r = new DefaultTableCellRenderer() {
 
     }
     public void promoteDemoteButton(){
-        if(role.equals("Admin")){
-            lblPromote.setToolTipText("Demote to User");
-            lblPromote.setIcon(demote);
-        }else{
-             lblPromote.setToolTipText("Set as Admin");
-         
-            lblPromote.setIcon(promote);
-        }
+   
+             lblPromote.setVisible(true);
+            if (role.equals("Admin")) {
+                lblPromote.setToolTipText("Demote to User");
+                lblPromote.setIcon(demote);
+            } else {
+                lblPromote.setToolTipText("Set as Admin");
+                
+                lblPromote.setIcon(promote);
+            }
+        
+        
     }
 
     void loadDefault() {

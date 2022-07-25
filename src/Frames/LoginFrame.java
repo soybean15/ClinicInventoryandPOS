@@ -50,7 +50,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 String email = rs.getString("user_email");
                  BufferedImage im = ImageIO.read(rs.getBinaryStream("user_image"));
                 ImageIcon img = new ImageIcon(im);
-                user = new User( id,  firstName,  lastName,  role,  contact,  email,  img);
+                user = new User( id,  firstName,  lastName,  role,  contact,  email,  img ,username);
                 
                 main = new MainFrame();
                 main.setUser(user);

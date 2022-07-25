@@ -11,15 +11,16 @@ import javax.swing.ImageIcon;
  */
 public class User {
     int id;
-    String firstName;
-    String lastName;
-    String contact;
-    String email;
-    String role;
-    ImageIcon img;
+    private String username;
+    private String firstName;
+    private String lastName;
+    private String contact;
+    private String email;
+    private String role;
+    private ImageIcon img;
 
 
-    public User(int id, String firstName, String lastName, String role, String contact, String email, ImageIcon img) {
+    public User(int id, String firstName, String lastName, String role, String contact, String email, ImageIcon img,String username) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -27,6 +28,7 @@ public class User {
         this.email = email;
         this.contact = contact;
         this.img = img;
+        this.username = username;
         
        //System.out.println(id+" "+firstName+" "+lastName+" "+role+" "+email+" "+contact);
     }
@@ -34,6 +36,9 @@ public class User {
    
     public int getId() {
         return id;
+    }
+    public String getUserName(){
+        return username;
     }
 
     public String getFirstName() {

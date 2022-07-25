@@ -6,7 +6,13 @@ package Frames;
 
 
 import Classes.DbConnection;
+import Classes.LogsClass;
 import Classes.User;
+import Panels.DashBoard;
+import Panels.Inventory;
+import Panels.PointOfSales;
+import Panels.Reports;
+import Panels.Users;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -33,8 +39,17 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
+    DashBoard dashBoard = new DashBoard();;
+    Inventory inventory = new Inventory();
+    PointOfSales pointOfSales =new PointOfSales() ;
+    Reports reports =new Reports();
+    Users users= new Users();
     Connection conn = null;
     User user;
+    
+   
+    
+    ImageIcon disabledUser = new ImageIcon(this.getClass().getClassLoader().getResource("Icons/manBNW.png"));
     
     public void setUser(User user){
         this.user =user;
@@ -42,11 +57,25 @@ public class MainFrame extends javax.swing.JFrame {
         circularImage();
         lblName.setText(user.getFirstName()+" "+user.getLastName());
         lblRole.setText(user.getRole());
+        System.out.println(user.getRole());
+         if(user.getRole().equals("User")){
+          
+            jLabel28.setIcon(disabledUser);
+            
+        }
       //   System.out.println(user.getId()+" "+user.getFirstName()+" "+user.getLastName()+" "+user.getRole()+" "+user.getEmail()+" "+user.getContact());
     }
     public MainFrame() {
         
         conn = DbConnection.dbConnect();
+
+
+        this.add(dashBoard);
+        this.add(inventory);
+        this.add(pointOfSales);
+        this.add(reports);
+        this.add(users);
+       
         initComponents();
         init();
         
@@ -55,13 +84,16 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     private void init(){
-        activePanel(menuDashboard);
+//        activePanel(menuDashboard);
         showPanel(dashBoard);
+        dashBoard.init();
         activePanel_mini(miniMenuDashboard);
 
         showPanel_mini(dashBoard);
-        sidePanel.hide();
-        x=0;
+//        sidePanel.hide();
+//        x=0;
+        
+      
                 
         
     }
@@ -125,27 +157,6 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        sidePanel = new javax.swing.JPanel();
-        menuLogout = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        menuDashboard = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        menuPOS = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        menuReport = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        menuInventory = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        menuUsers = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
         sidePanelMini = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         miniMenuLogout = new javax.swing.JPanel();
@@ -161,208 +172,25 @@ public class MainFrame extends javax.swing.JFrame {
         miniMenuUsers = new javax.swing.JPanel();
         jLabel28 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
-        users = new Panels.Users();
-        reports = new Panels.Reports();
-        pointOfSales = new Panels.PointOfSales();
-        inventory = new Panels.Inventory();
-        dashBoard = new Panels.DashBoard();
         lblImage = new javax.swing.JLabel();
         lblRole = new javax.swing.JLabel();
         lblName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(1000, 625));
+        setMaximumSize(new java.awt.Dimension(990, 625));
+        setMinimumSize(new java.awt.Dimension(990, 625));
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(0, 51, 102));
         jPanel1.setMinimumSize(new java.awt.Dimension(1000, 625));
         jPanel1.setPreferredSize(new java.awt.Dimension(1000, 625));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        sidePanel.setBackground(new java.awt.Color(51, 51, 51));
-        sidePanel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                sidePanelMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                sidePanelMouseExited(evt);
-            }
-        });
-        sidePanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        menuLogout.setBackground(new java.awt.Color(51, 51, 51));
-        menuLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuLogout.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                menuLogoutMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                menuLogoutMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                menuLogoutMouseExited(evt);
-            }
-        });
-        menuLogout.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/logout.png"))); // NOI18N
-        menuLogout.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jLabel12.setFont(new java.awt.Font("Waree", 1, 12)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel12.setText("Logout");
-        menuLogout.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, 140, 20));
-
-        sidePanel.add(menuLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 360, 210, 60));
-
-        jLabel1.setBackground(new java.awt.Color(51, 51, 51));
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/icons8-hamburger-menu-48.png"))); // NOI18N
-        jLabel1.setText("jLabel1");
-        jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel1.setOpaque(true);
-        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel1MouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jLabel1MouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jLabel1MouseExited(evt);
-            }
-        });
-        sidePanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, 49, -1));
-
-        menuDashboard.setBackground(new java.awt.Color(51, 51, 51));
-        menuDashboard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuDashboard.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                menuDashboardMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                menuDashboardMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                menuDashboardMouseExited(evt);
-            }
-        });
-        menuDashboard.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/monitor.png"))); // NOI18N
-        menuDashboard.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jLabel7.setFont(new java.awt.Font("Waree", 1, 12)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setText("Dashboard");
-        menuDashboard.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, 140, 20));
-
-        sidePanel.add(menuDashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 210, 60));
-
-        menuPOS.setBackground(new java.awt.Color(51, 51, 51));
-        menuPOS.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuPOS.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                menuPOSMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                menuPOSMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                menuPOSMouseExited(evt);
-            }
-        });
-        menuPOS.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/icons8-transaction-approved-48.png"))); // NOI18N
-        menuPOS.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jLabel9.setFont(new java.awt.Font("Waree", 1, 12)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel9.setText("Point of Sales");
-        menuPOS.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, 140, 20));
-
-        sidePanel.add(menuPOS, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 210, 60));
-
-        menuReport.setBackground(new java.awt.Color(51, 51, 51));
-        menuReport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuReport.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                menuReportMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                menuReportMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                menuReportMouseExited(evt);
-            }
-        });
-        menuReport.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/business-report.png"))); // NOI18N
-        menuReport.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jLabel10.setFont(new java.awt.Font("Waree", 1, 12)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel10.setText("Report");
-        menuReport.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, 140, 20));
-
-        sidePanel.add(menuReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 180, 210, 60));
-
-        menuInventory.setBackground(new java.awt.Color(51, 51, 51));
-        menuInventory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuInventory.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                menuInventoryMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                menuInventoryMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                menuInventoryMouseExited(evt);
-            }
-        });
-        menuInventory.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/icons8-inventory-67.png"))); // NOI18N
-        menuInventory.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jLabel11.setFont(new java.awt.Font("Waree", 1, 12)); // NOI18N
-        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel11.setText("Inventory");
-        menuInventory.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, 140, 20));
-
-        sidePanel.add(menuInventory, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 210, 60));
-
-        menuUsers.setBackground(new java.awt.Color(51, 51, 51));
-        menuUsers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuUsers.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                menuUsersMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                menuUsersMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                menuUsersMouseExited(evt);
-            }
-        });
-        menuUsers.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/man.png"))); // NOI18N
-        menuUsers.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jLabel14.setFont(new java.awt.Font("Waree", 1, 12)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel14.setText("Users");
-        menuUsers.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, 140, 20));
-
-        sidePanel.add(menuUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 210, 60));
-
-        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel15.setText("Copyrights 2020");
-        sidePanel.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 520, 120, -1));
-
-        jPanel1.add(sidePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 73, 210, 552));
 
         sidePanelMini.setBackground(new java.awt.Color(51, 51, 51));
         sidePanelMini.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -511,17 +339,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel1.add(sidePanelMini, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 73, 49, 552));
 
-        users.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                usersMouseEntered(evt);
-            }
-        });
-        jPanel1.add(users, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 73, -1, -1));
-        jPanel1.add(reports, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 73, -1, -1));
-        jPanel1.add(pointOfSales, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 73, -1, -1));
-        jPanel1.add(inventory, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 73, -1, -1));
-        jPanel1.add(dashBoard, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 73, -1, -1));
-
         lblImage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jPanel1.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 12, 50, 50));
 
@@ -533,165 +350,39 @@ public class MainFrame extends javax.swing.JFrame {
         lblName.setForeground(new java.awt.Color(255, 255, 255));
         jPanel1.add(lblName, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 20, 190, 20));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, -1));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 990, -1));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    
-    int x = 210;
-    
-    public void hideSidePanel(){
-           if (x == 210){
-            sidePanel.setSize(210,552);
-            Thread th = new Thread(){
-                @Override
-                public void run(){
-                    try{
-                        for(int i=210; i>=0;i--){
-                            Thread.sleep(1);
-                            sidePanel.setSize(i, 552);
-                        }
-                        sidePanel.hide();
-                    }catch(Exception e){
-                        JOptionPane.showMessageDialog(null, e);
-                    }
-                }
-                    
-           
-            };th.start();
-           x=0;
-          
-        }
-        jLabel1.hide();   
-        jLabel2.show();
-          
-        System.out.println("hide "+x);
-    }
-    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-        if (x == 210){
-            
-            sidePanel.setSize(210,552);
-            Thread th = new Thread(){
-                @Override
-                public void run(){
-                    try{
-                        for(int i=210; i>=0;i--){
-                            Thread.sleep(1);
-                            sidePanel.setSize(i, 552);
-                        }
-                        sidePanel.hide();
-                    }catch(Exception e){
-                        JOptionPane.showMessageDialog(null, e);
-                    }
-                }
-                    
-            };th.start();
-           x=0;
-            
-        }
-        jLabel1.hide();   
-        jLabel2.show();
-        
-        System.out.println("hide "+x);
-    }//GEN-LAST:event_jLabel1MouseClicked
-
+ 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
-        
-        if (x == 0){
-            sidePanel.show();
-            sidePanel.setSize(x,552);
-            Thread th = new Thread(){
-                @Override
-                public void run(){
-                    try{
-                        for(int i=0; i<=x;i++){
-                            Thread.sleep(1);
-                            sidePanel.setSize(i, 552);
-                        }
-                    }catch(Exception e){
-                        JOptionPane.showMessageDialog(null, e);
-                    }
-                }
-                    
-            };th.start();
-           x=210;
-           
-        }
-         jLabel1.show();
-         jLabel2.hide();
-         
-          System.out.println("show "+x);
+//        
+//        if (x == 0){
+//            sidePanel.show();
+//            sidePanel.setSize(x,552);
+//            Thread th = new Thread(){
+//                @Override
+//                public void run(){
+//                    try{
+//                        for(int i=0; i<=x;i++){
+//                            Thread.sleep(1);
+//                            sidePanel.setSize(i, 552);
+//                        }
+//                    }catch(Exception e){
+//                        JOptionPane.showMessageDialog(null, e);
+//                    }
+//                }
+//                    
+//            };th.start();
+//           x=210;
+//           
+//        }
+//         jLabel1.show();
+//         jLabel2.hide();
+//         
+//          System.out.println("show "+x);
     }//GEN-LAST:event_jLabel2MouseClicked
-
-    private void jLabel1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseEntered
-       labelColor(jLabel1);
-    }//GEN-LAST:event_jLabel1MouseEntered
-
-    private void jLabel1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseExited
-         resetLabelColor(jLabel1);
-    }//GEN-LAST:event_jLabel1MouseExited
-
-    private void menuDashboardMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuDashboardMouseEntered
-        panelColor(menuDashboard);
-    }//GEN-LAST:event_menuDashboardMouseEntered
-
-    private void menuDashboardMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuDashboardMouseExited
-        resetPanelColor(menuDashboard);
-    }//GEN-LAST:event_menuDashboardMouseExited
-
-    private void menuPOSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuPOSMouseClicked
-        activePanel(menuPOS);
-        showPanel(pointOfSales);
-    }//GEN-LAST:event_menuPOSMouseClicked
-
-    private void menuPOSMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuPOSMouseEntered
-        panelColor(menuPOS);
-    }//GEN-LAST:event_menuPOSMouseEntered
-
-    private void menuPOSMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuPOSMouseExited
-       resetPanelColor(menuPOS);
-    }//GEN-LAST:event_menuPOSMouseExited
-
-    private void menuReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuReportMouseClicked
-        activePanel(menuReport);
-        showPanel(reports);
-    }//GEN-LAST:event_menuReportMouseClicked
-
-    private void menuReportMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuReportMouseEntered
-         panelColor(menuReport);
-    }//GEN-LAST:event_menuReportMouseEntered
-
-    private void menuReportMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuReportMouseExited
-        resetPanelColor(menuReport);
-    }//GEN-LAST:event_menuReportMouseExited
-
-    private void menuInventoryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuInventoryMouseEntered
-        panelColor(menuInventory);
-    }//GEN-LAST:event_menuInventoryMouseEntered
-
-    private void menuInventoryMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuInventoryMouseExited
-        resetPanelColor(menuInventory);
-    }//GEN-LAST:event_menuInventoryMouseExited
-
-    private void menuUsersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuUsersMouseEntered
-       panelColor(menuUsers);
-    }//GEN-LAST:event_menuUsersMouseEntered
-
-    private void menuUsersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuUsersMouseExited
-        resetPanelColor(menuUsers);
-          if(menuUsers.getBackground().getRGB()==-6715513){
-              hideSidePanel();
-        }
-    }//GEN-LAST:event_menuUsersMouseExited
-
-    private void menuLogoutMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuLogoutMouseEntered
-        panelColor(menuLogout);
-    }//GEN-LAST:event_menuLogoutMouseEntered
-
-    private void menuLogoutMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuLogoutMouseExited
-       resetPanelColor(menuLogout);
-    }//GEN-LAST:event_menuLogoutMouseExited
 
     private void miniMenuLogoutMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_miniMenuLogoutMouseEntered
        panelColor(miniMenuLogout);
@@ -741,58 +432,51 @@ public class MainFrame extends javax.swing.JFrame {
         resetPanelColor(miniMenuUsers);
     }//GEN-LAST:event_miniMenuUsersMouseExited
 
-    private void menuLogoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuLogoutMouseClicked
-       
-    }//GEN-LAST:event_menuLogoutMouseClicked
-
-    private void menuUsersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuUsersMouseClicked
-        activePanel(menuUsers);
-        
-        showPanel(users);
-       
-        
-       
-      
-    }//GEN-LAST:event_menuUsersMouseClicked
-
-    private void menuInventoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuInventoryMouseClicked
-        activePanel(menuInventory);
-        showPanel(inventory);
-    }//GEN-LAST:event_menuInventoryMouseClicked
-
-    private void menuDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuDashboardMouseClicked
-        activePanel(menuDashboard);
-        showPanel(dashBoard);
-    }//GEN-LAST:event_menuDashboardMouseClicked
-
     private void miniMenuDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_miniMenuDashboardMouseClicked
        activePanel_mini(miniMenuDashboard);
        showPanel_mini(dashBoard); 
-         
+          dashBoard.init();
     }//GEN-LAST:event_miniMenuDashboardMouseClicked
 
     private void miniMenuLogoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_miniMenuLogoutMouseClicked
-        // TODO add your handling code here:
+        LoginFrame login = new LoginFrame();
+          int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Log out?","Log out", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                user = null;
+        login.show();
+        dispose();
+            }
+        
     }//GEN-LAST:event_miniMenuLogoutMouseClicked
 
     private void miniMenuPOSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_miniMenuPOSMouseClicked
         activePanel_mini(miniMenuPOS);
        showPanel_mini(pointOfSales); 
+       pointOfSales.setUserInstance(user);
     }//GEN-LAST:event_miniMenuPOSMouseClicked
 
     private void miniMeniReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_miniMeniReportMouseClicked
-       activePanel_mini(miniMeniReport);
-       showPanel_mini(reports); 
+      
+        activePanel_mini(miniMeniReport);
+        showPanel_mini(reports); 
+        reports.init();
     }//GEN-LAST:event_miniMeniReportMouseClicked
 
     private void miniMenuInventoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_miniMenuInventoryMouseClicked
        activePanel_mini(miniMenuInventory);
        showPanel_mini(inventory); 
+       inventory.setUser(user);
     }//GEN-LAST:event_miniMenuInventoryMouseClicked
 
     private void miniMenuUsersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_miniMenuUsersMouseClicked
-        activePanel_mini(miniMenuUsers);
+
+       
+       if (user.getRole().equals("Admin")) {
+
+              activePanel_mini(miniMenuUsers);
        showPanel_mini(users); 
+        }
+
     }//GEN-LAST:event_miniMenuUsersMouseClicked
 
     private void jLabel2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseEntered
@@ -803,23 +487,13 @@ public class MainFrame extends javax.swing.JFrame {
        resetLabelColor(jLabel2);
     }//GEN-LAST:event_jLabel2MouseExited
 
-    private void sidePanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sidePanelMouseExited
-       
-
-        
-        
-           
-        
-
-    }//GEN-LAST:event_sidePanelMouseExited
-
-    private void sidePanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sidePanelMouseEntered
-      
-    }//GEN-LAST:event_sidePanelMouseEntered
-
     private void usersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersMouseEntered
       
     }//GEN-LAST:event_usersMouseEntered
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+     
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
@@ -857,15 +531,6 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private Panels.DashBoard dashBoard;
-    private Panels.Inventory inventory;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
@@ -873,35 +538,18 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblImage;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblRole;
-    private javax.swing.JPanel menuDashboard;
-    private javax.swing.JPanel menuInventory;
-    private javax.swing.JPanel menuLogout;
-    private javax.swing.JPanel menuPOS;
-    private javax.swing.JPanel menuReport;
-    private javax.swing.JPanel menuUsers;
     private javax.swing.JPanel miniMeniReport;
     private javax.swing.JPanel miniMenuDashboard;
     private javax.swing.JPanel miniMenuInventory;
     private javax.swing.JPanel miniMenuLogout;
     private javax.swing.JPanel miniMenuPOS;
     private javax.swing.JPanel miniMenuUsers;
-    private Panels.PointOfSales pointOfSales;
-    private Panels.Reports reports;
-    private javax.swing.JPanel sidePanel;
     private javax.swing.JPanel sidePanelMini;
-    private Panels.Users users;
     // End of variables declaration//GEN-END:variables
     private void labelColor(JLabel label){
         label.setBackground(new Color(51,70,70));
@@ -929,12 +577,12 @@ public class MainFrame extends javax.swing.JFrame {
         Color original = new Color(51,51,51);
         Color active = new Color(153,135,135);
         
-        menuDashboard.setBackground(original);
-        menuInventory.setBackground(original);
-        menuPOS.setBackground(original);
-        menuReport.setBackground(original);
-        menuUsers.setBackground(original);
-        
+//        menuDashboard.setBackground(original);
+//        menuInventory.setBackground(original);
+//        menuPOS.setBackground(original);
+//        menuReport.setBackground(original);
+//        menuUsers.setBackground(original);
+//        
         miniMenuDashboard.setBackground(original);
         miniMenuInventory.setBackground(original);
         miniMenuPOS.setBackground(original);
@@ -964,11 +612,14 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void showPanel(JPanel panel){
         dashBoard.hide();
-        reports.hide();
+   
+         reports.hide();
         pointOfSales.hide();
         users.hide();
         inventory.hide();
-        
+
+        panel.setLocation(50,73);
+        panel.setSize(950, 560);
         panel.show();
        
     }
@@ -995,8 +646,11 @@ public class MainFrame extends javax.swing.JFrame {
         inventory.hide();
         
        
-        sidePanel.hide();
+//        sidePanel.hide();
+        panel.setLocation(49,73);
+        panel.setSize(950, 560);
         panel.show();
+        
 
     }
 }
